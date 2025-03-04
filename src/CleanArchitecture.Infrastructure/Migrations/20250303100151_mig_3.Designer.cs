@@ -4,6 +4,7 @@ using CleanArchitecture.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleanArchitecture.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250303100151_mig_3")]
+    partial class mig_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,24 +34,22 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.Property<DateOnly>("BirthOfDate")
                         .HasColumnType("date");
 
-                    b.Property<DateTimeOffset>("CreateAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreateUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CreateUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset?>("DeleteAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DeleteAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("DeleteUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("DeleteUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -60,11 +61,11 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.Property<decimal>("Salary")
                         .HasColumnType("money");
 
-                    b.Property<DateTimeOffset?>("UpdateAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("UpdateAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("UpdateUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UpdateUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -83,17 +84,18 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("CreateAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreateUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CreateUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset?>("DeleteAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("DeleteAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("DeleteUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("DeleteUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasColumnType("varchar(MAX)");
@@ -139,11 +141,11 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("UpdateAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("UpdateAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("UpdateUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UpdateUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .HasColumnType("varchar(15)");
@@ -238,8 +240,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                                 .HasForeignKey("EmployeeId");
                         });
 
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
 
                     b.Navigation("PersonnelInformation")
                         .IsRequired();

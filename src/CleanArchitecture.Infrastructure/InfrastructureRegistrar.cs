@@ -1,5 +1,9 @@
-﻿using CleanArchitecture.Infrastructure.Context;
+﻿using CleanArchitecture.Domanin.Users;
+using CleanArchitecture.Infrastructure.Context;
+using CleanArchitecture.Infrastructure.Options;
 using GenericRepository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +22,33 @@ namespace CleanArchitecture.Infrastructure
 			});
 
 			services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<ApplicationDbContext>());
+
+			// UserManager kullanabilmek için yazılır
+			services
+				.AddIdentity<AppUser, IdentityRole<Guid>>(opt =>
+				{
+					opt.Password.RequiredLength = 1;
+					opt.Password.RequireNonAlphanumeric = false;
+					opt.Password.RequireDigit = false;
+					opt.Password.RequireLowercase = false;
+					opt.Password.RequireUppercase = false;
+					opt.Lockout.MaxFailedAccessAttempts = 5; // kullanıcı şifreyi 5 denemeden sonra da hatalı girmişse
+					opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // 5 dakika kitler
+					opt.SignIn.RequireConfirmedEmail = true; // kitlendikten sonra email onayı gerektirsin
+				}) // Identity kütüphanesini tanımlar.
+				.AddEntityFrameworkStores<ApplicationDbContext>() // ApplicationDbContext ile bağlantısını yapar.
+				.AddDefaultTokenProviders(); // Şifremi unuttum, şifremi yenile gibi işlemler için UserManager class'ının token üretme metodunun çalışabilmesini sağlar.
+
+
+			services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+			services.ConfigureOptions<JwtOptionsSetup>();
+
+			services.AddAuthentication(opt =>
+			{
+				opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			}).AddJwtBearer();
+			services.AddAuthorization();
 
 			//services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 

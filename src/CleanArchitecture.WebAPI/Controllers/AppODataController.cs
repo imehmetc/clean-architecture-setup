@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.Application.Employees;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -11,6 +12,7 @@ namespace CleanArchitecture.WebAPI.Controllers;
 [Route("odata")]
 [ApiController]
 [EnableQuery] // ekstra sorgu atabilmeyi sağlar
+
 public class AppODataController(ISender sender) : ODataController
 {
 	public static IEdmModel GetEdmModel() // openapi

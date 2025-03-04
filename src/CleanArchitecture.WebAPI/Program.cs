@@ -14,7 +14,11 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        
+
+        builder.Services.AddResponseCompression(opt =>
+        {
+            opt.EnableForHttps = true; // sorgu sonucu dönen verinin boyutunu sıkıştırır böylelikle daha hızlı sonuç döner. 
+        });
         
         builder.AddServiceDefaults();
         builder.Services.AddApplication();
@@ -48,8 +52,9 @@ public class Program
 		app.MapOpenApi(); // openapi
 		app.MapScalarApiReference(); // scalar
 		
-        
         app.MapDefaultEndpoints();
+
+        app.UseHttpsRedirection();
 
         app.UseCors(x => x // Openapi için cors
             .AllowAnyHeader()
@@ -60,9 +65,16 @@ public class Program
 
         app.RegisterRoutes();
 
-        app.UseExceptionHandler();
+        app.UseAuthentication(); // jwt
+        app.UseAuthorization(); // jwt
 
-        app.MapControllers().RequireRateLimiting("fixed");
+        app.UseResponseCompression(); // sorgu sonucu dönen verinin boyutunu sıkıştırır böylelikle daha hızlı sonuç döner. 
+
+		app.UseExceptionHandler();
+
+        app.MapControllers().RequireRateLimiting("fixed").RequireAuthorization(); // RequireAuthorization() => tüm controller'larda authorization'u otomatik kontrol eder.
+
+		ExtensionsMiddleware.CreateFirstUser(app); // create first user
 
 		app.Run();
     }
